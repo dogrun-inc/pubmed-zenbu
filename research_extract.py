@@ -11,7 +11,6 @@ import pandas as pd
 parser = argparse.ArgumentParser(description="This script extracts information from PubMed abstract and title using openai.")
 
 parser.add_argument("arguments.csv", help="arguments csv file") 
-parser.add_argument("oldest_year", type=int, help="oldest year to search for PubMed")
 # parser.add_argument("prompt", help="your prompt for openai")
 
 args = parser.parse_args()
@@ -30,9 +29,10 @@ def main():
     ncbi_api_key = df.iloc[1,1]
     search_query = df.iloc[2,1]
     prompt = df.iloc[3,1]
+    oldest_year = df.iloc[4,1]
 
     # esearchを使ってpmidのリストを取得する
-    years_list = eutils.get_yearlist(args.oldest_year)
+    years_list = eutils.get_yearlist(oldest_year)
     pmids_alllist = []
     for a_year in years_list:
         a_year = int(a_year)
