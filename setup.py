@@ -5,9 +5,9 @@
 
 from setuptools import setup
 
-DESCRIPTION = '' # Tools description
+DESCRIPTION = '- This tool extracts metadata from PubMed articles using ChatGPT. Inputs as a `search query for PubMed` and `prompt for ChatGPT`, output as a csv file including the extracted results. Positional arguments: arguments.csv (csv file including openai_api_key, ncbi_api_key, search_query, and prompt),oldest_year (oldest year to search for PubMed)' # Tools description
 NAME = 'pubmed_zenbu'
-AUTHOR = 'Takayuki Suzuki'
+AUTHOR = 'Sora Yonezawa, Mitsuo Shintani, Naoya Oec, Takayuki Suzuki'
 AUTHOR_EMAIL = '' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu'
 LICENSE = '' # MIT License ? 
