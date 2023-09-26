@@ -10,7 +10,7 @@ NAME = 'pubmed_zenbu'
 AUTHOR = 'Sora Yonezawa, Mitsuo Shintani, Naoya Oec, Takayuki Suzuki'
 AUTHOR_EMAIL = 'oec@dogrun.jp' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu'
-LICENSE = 'MIT' # MIT License ? 
+LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
 VERSION = '0.1.0' # Version number
 PYTHON_REQUIRES = '>=3.10' 
@@ -22,7 +22,7 @@ PACKAGES = [
 ]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
-    'License :: OSI Approved :: MIT License', # MIT License ?
+    'License :: OSI Approved :: MIT License', # MIT License
     'Programming Language :: Python :: 3.9' 
 ]
 with open('README.md', 'r', encoding='utf-8') as fp:
