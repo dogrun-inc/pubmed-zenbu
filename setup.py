@@ -13,7 +13,7 @@ URL = 'https://github.com/dogrun-inc/pubmed-zenbu'
 LICENSE = '' # MIT License ? 
 DOWNLOAD_URL = URL
 VERSION = '' # Version number
-PYTHON_REQUIRES = '>=3.9' 
+PYTHON_REQUIRES = '>=3.10' 
 INSTALL_REQUIRES = [
     'pytz>=' # This is Timezone library
 ]

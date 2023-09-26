@@ -1,18 +1,16 @@
 # encoding: utf-8
 import requests
-import config
 import argparse
 import subprocess
 import xml.etree.ElementTree as ET
 import csv
 from modules import eutils,use_gpt
-from dotenv import load_dotenv
 import os
 import pandas as pd
 
 parser = argparse.ArgumentParser(description="This script extracts information from PubMed abstract and title using openai.")
 
-parser.add_argument("arguments.csv", help="command arguments csv file") 
+parser.add_argument("arguments.csv", help="arguments csv file") 
 parser.add_argument("oldest_year", type=int, help="oldest year to search for PubMed")
 # parser.add_argument("prompt", help="your prompt for openai")
 
@@ -21,7 +19,6 @@ args = parser.parse_args()
 # TODO WSL2で試したらなぜかうまくいかない。。
 # TODO argparseを使ってコマンドラインツールにする。最後に対応する。
 
-load_dotenv()
     
     
 def main():
