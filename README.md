@@ -3,8 +3,3 @@
 - positional arguments:
   - arguments.csv  csv file including openai_api_key, ncbi_api_key, search_query, and prompt
   - oldest_year    oldest year to search for PubMed
-
-## Prerequisites
-- python-dotenv
-- requests
-- openai
