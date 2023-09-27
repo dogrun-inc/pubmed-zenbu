@@ -12,27 +12,23 @@ AUTHOR_EMAIL = 'oec@dogrun.jp' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu'
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
-<<<<<<< HEAD
-VERSION = '' # Version number
-PYTHON_REQUIRES = '>=3.9' 
-INSTALL_REQUIRES = [
-    'requests',
-    'openai',
-    'PyYAML',
-    'Pandas' # This is Timezone library
-]
-=======
 VERSION = '0.1.0' # Version number
-PYTHON_REQUIRES = '>=3.10' 
-INSTALL_REQUIRES = []
->>>>>>> cd3eb1ea20fbcff4c4478fb97cc68080b4968ae0
+PYTHON_REQUIRES = '>=3.9'
+INSTALL_REQUIRES = [
+    'requests>=2.31.0',
+    'openai>=0.28.1',
+    'PyYAML>=6.0.1',
+    'Pandas>=2.1.1'
+]
 PACKAGES = [
-    'pubmed_zenbu'
+    'pubmedZenbu'
 ]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
     'License :: OSI Approved :: MIT License', # MIT License
-    'Programming Language :: Python :: 3.9' 
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11'
 ]
 with open('README.md', 'r', encoding='utf-8') as fp:
     readme = fp.read()
