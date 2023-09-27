@@ -4,33 +4,39 @@ import argparse
 import subprocess
 import xml.etree.ElementTree as ET
 import csv
-from modules import eutils,use_gpt
+import eutils
+import use_gpt
 import os
 import pandas as pd
+import yaml
 
-parser = argparse.ArgumentParser(description="This script extracts information from PubMed abstract and title using openai.")
+with open('config.yml', 'r') as yml:
+    config = yaml.safe_load(yml)
 
-parser.add_argument("arguments.csv", help="arguments csv file") 
-# parser.add_argument("prompt", help="your prompt for openai")
+ncbi_api_key = config['pubmed_search']['ncbi_api_key']
+search_query = config['pubmed_search']['search_query']
+oldest_year = config['pubmed_search']['search_oldest_year']
+texttouse = config['pubmed_search']['which_text_to_use']
 
-args = parser.parse_args()
+if ncbi_api_key == None or search_query == None or oldest_year == None or texttouse == None:
+    config_path = os.path.abspath('./config.yml')
+    print(f"please fill in your config file at {config_path}")
+else:
+    pass
+
+
+# parser = argparse.ArgumentParser(description="This script extracts information from PubMed abstract and title using openai.")
+# parser.add_argument("arguments.csv", help="arguments csv file") 
+# # parser.add_argument("prompt", help="your prompt for openai")
+# args = parser.parse_args()
 
 # TODO WSL2で試したらなぜかうまくいかない。。
-# TODO argparseを使ってコマンドラインツールにする。最後に対応する。
 
     
     
 def main():
     """
     """
-    # read a csv file and make a pandas dataframe
-    df = pd.read_csv(args.arguments.csv)
-    openai_api_key = df.iloc[0,1]
-    ncbi_api_key = df.iloc[1,1]
-    search_query = df.iloc[2,1]
-    prompt = df.iloc[3,1]
-    oldest_year = df.iloc[4,1]
-
     # esearchを使ってpmidのリストを取得する
     years_list = eutils.get_yearlist(oldest_year)
     pmids_alllist = []
@@ -86,35 +92,47 @@ def main():
             pmid = eutils.get_text_by_tree("./MedlineCitation/PMID", element)
             print(f"\npmid: {pmid}....")
             element_title = element.find("./MedlineCitation/Article/ArticleTitle")
-            prompt = args.prompt
+            prompt = config['openai']['prompt']
             for_join.append(prompt)
             title = "".join(element_title.itertext())
             title = "\n'" + title
             for_join.append(title)
-            element_abstract = element.find(
-                "./MedlineCitation/Article/Abstract"
-            )
-            try:
-                abstract = "".join(element_abstract.itertext())
-            except:
-                abstract = ""      
-            abstract = abstract + "'" 
-            for_join.append(abstract)
-            input = ",".join(for_join)
-
-            # use openAI api
-            try:
-                openai_result = use_gpt.gpt_api(input, openai_api_key)
-                print({"pmid":pmid,"gpt":openai_result})
-                # プログラムが急停止してしまう事態のバックアップとして、途中経過を出力する
-                extracted_data.append({"pmid":pmid,"gpt":openai_result})
-            except:
-                print("error at openai_api: {}".format(pmid))
-    
+            if texttouse == "title":
+                print("title only")               
+                input = ",".join(for_join)
+            elif texttouse == "abstract":
+                print("title and abstract")
+                element_abstract = element.find(
+                    "./MedlineCitation/Article/Abstract"
+                )
+                try:
+                    abstract = "".join(element_abstract.itertext())
+                except:
+                    abstract = ""      
+                abstract = abstract + "'" 
+                for_join.append(abstract)
+                input = ",".join(for_join)
+            else:
+                print("please choose either title or abstract for 'which_text_to_use' in your config.yml")
+                # use openAI api
+            
+            if config['openai']['openai_api_key'] == None:
+                print("Not using OpenAI. PubMed search results will be exported")
+                print({"pmid":pmid,"gpt_or_PubmedResults":input})
+                extracted_data.append({"pmid":pmid,"gpt_or_PubmedResults":openai_result})
+            else:
+                try:
+                    openai_result = use_gpt.gpt_api(input, config['openai']['openai_api_key'])
+                    print({"pmid":pmid,"gpt_or_PubmedResults":openai_result})
+                    # プログラムが急停止してしまう事態のバックアップとして、途中経過を出力する
+                    extracted_data.append({"pmid":pmid,"gpt_or_PubmedResults":openai_result})
+                except:
+                    print("error at openai_api: {}".format(pmid))
+        
     # export the result as csv
     field_name = [
         "pmid",
-        "gpt",
+        "gpt_or_PubmedResults",
     ]
 
     with open(

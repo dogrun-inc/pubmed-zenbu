@@ -1,0 +1,9 @@
+pubmed_search:
+  ncbi_api_key: abcdefj
+  search_query: covid19
+  search_oldest_year: 2010
+  which_text_to_use: title
+openai:
+  use_openai: false 
+  openai_api_key: 
+  prompt: 
