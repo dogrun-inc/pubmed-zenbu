@@ -14,9 +14,7 @@ LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
 VERSION = '0.1.0' # Version number
 PYTHON_REQUIRES = '>=3.10' 
-INSTALL_REQUIRES = [
-    'pytz>=' # This is Timezone library
-]
+INSTALL_REQUIRES = []
 PACKAGES = [
     'pubmed_zenbu'
 ]
