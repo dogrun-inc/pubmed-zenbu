@@ -8,10 +8,11 @@ from setuptools import setup
 DESCRIPTION = '- This tool extracts metadata from PubMed articles using ChatGPT. Inputs as a `search query for PubMed` and `prompt for ChatGPT`, output as a csv file including the extracted results. Positional arguments: arguments.csv (csv file including openai_api_key, ncbi_api_key, search_query, and prompt),oldest_year (oldest year to search for PubMed)' # Tools description
 NAME = 'PubmedZenbu'
 AUTHOR = 'Sora Yonezawa, Mitsuo Shintani, Naoya Oec, Takayuki Suzuki'
-AUTHOR_EMAIL = '' # Suzuki-san's email address
+AUTHOR_EMAIL = 'oec@dogrun.jp' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu'
-LICENSE = '' # MIT License ? 
+LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
+<<<<<<< HEAD
 VERSION = '' # Version number
 PYTHON_REQUIRES = '>=3.9' 
 INSTALL_REQUIRES = [
@@ -20,12 +21,17 @@ INSTALL_REQUIRES = [
     'PyYAML',
     'Pandas' # This is Timezone library
 ]
+=======
+VERSION = '0.1.0' # Version number
+PYTHON_REQUIRES = '>=3.10' 
+INSTALL_REQUIRES = []
+>>>>>>> cd3eb1ea20fbcff4c4478fb97cc68080b4968ae0
 PACKAGES = [
     'pubmed_zenbu'
 ]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
-    'License :: OSI Approved :: MIT License', # MIT License ?
+    'License :: OSI Approved :: MIT License', # MIT License
     'Programming Language :: Python :: 3.9' 
 ]
 with open('README.md', 'r', encoding='utf-8') as fp:
