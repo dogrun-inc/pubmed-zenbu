@@ -15,10 +15,10 @@ DOWNLOAD_URL = URL
 VERSION = '0.1.0' # Version number
 PYTHON_REQUIRES = '>=3.9'
 INSTALL_REQUIRES = [
-    'requests>=2.31.0',
-    'openai>=0.28.1',
-    'PyYAML>=6.0.1',
-    'Pandas>=2.1.1'
+    'requests>=2.31',
+    'openai>=0.28',
+    'PyYAML>=5.1',
+    'Pandas>=2.0.0'
 ]
 PACKAGES = [
     'PubmedZenbu'
