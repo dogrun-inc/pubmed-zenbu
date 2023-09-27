@@ -21,7 +21,7 @@ INSTALL_REQUIRES = [
     'Pandas>=2.1.1'
 ]
 PACKAGES = [
-    'pubmedZenbu'
+    'PubmedZenbu'
 ]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
