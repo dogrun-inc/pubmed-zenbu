@@ -16,7 +16,7 @@ VERSION = '0.1.0' # Version number
 PYTHON_REQUIRES = '>=3.9'
 INSTALL_REQUIRES = [
     'requests>=2.31',
-    'openai>=0.28',
+    'openai>=0.28.1',
     'PyYAML>=5.1',
     'Pandas>=2.0.0'
 ]
