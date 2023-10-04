@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # The MIT License (MIT)
 # https://zenn.dev/sikkim/articles/490f4043230b5a
-# twine upload --skip-existing dist/*
+# python3 setup.py bdist_wheel
+# twine upload --skip-existing dist/* で.pypircに記載されているusername(token)とpassword(API-key)情報を入力
 
 
 from setuptools import setup, find_packages
