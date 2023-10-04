@@ -4,8 +4,8 @@ import argparse
 import subprocess
 import xml.etree.ElementTree as ET
 import csv
-import eutils
-import use_gpt
+from . import eutils
+from . import use_gpt
 import os
 import pandas as pd
 import yaml
