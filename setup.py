@@ -18,7 +18,7 @@ URL = 'https://github.com/dogrun-inc/pubmed-zenbu/tree/2023_dev_suzuki'
 LONG_DESCRIPTION_CONTENT_TYPE = 'text/markdown'
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
-VERSION = '0.2.6' # Version number
+VERSION = '0.2.7' # Version number
 PYTHON_REQUIRES = '>=3.9'
 INSTALL_REQUIRES = [
     'requests>=2.31',
@@ -55,5 +55,5 @@ setup(
             "pubmedzenbu=PubmedZenbu.PubmedZenbu:main" #main関数の指定
         ]
     },
-    packages=find_packages()
+    packages=find_packages(include=['PubmedZenbu', 'PubmedZenbu.*'])
 )
