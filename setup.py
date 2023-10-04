@@ -17,7 +17,7 @@ long_description = long_description,
 long_description_content_type = 'text/markdown',
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
-VERSION = '0.2.0' # Version number
+VERSION = '0.2.1' # Version number
 PYTHON_REQUIRES = '>=3.9'
 INSTALL_REQUIRES = [
     'requests>=2.31',
@@ -59,7 +59,7 @@ setup(
     install_requires=INSTALL_REQUIRES,
     entry_points={
         "console_scripts": [
-            "sample=PubmedZenbu/.PubmedZenbu:main"
+            "PubmedZenbu=PubmedZenbu.PubmedZenbu:main"
         ]
     }
 )
