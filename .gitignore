@@ -133,3 +133,6 @@ extract_result.csv
 
 # .pypirc
 .pypirc
+
+# config.yml
+config.yml
