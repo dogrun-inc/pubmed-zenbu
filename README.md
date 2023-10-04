@@ -28,8 +28,4 @@ openai:
   output_path: /Users/suzuki/pubmed-zenbu/extract_result_20231004.csv
 ```
 
-- import the package and run the module by assiging the path to config.yml
-```
-import PubmedZenbu
-PubmedZenbu.PubmedZenbu(YOUR_config.yml_PATH)
-```
+- `pubmedzenbu PATH_TO_YOUR_config.yml_FILE`
