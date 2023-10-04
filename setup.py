@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # The MIT License (MIT)
 # https://zenn.dev/sikkim/articles/490f4043230b5a
+# twine upload --skip-existing dist/*
 
 
 from setuptools import setup, find_packages
