@@ -4,8 +4,8 @@ import argparse
 import subprocess
 import xml.etree.ElementTree as ET
 import csv
-from . import eutils
-from . import use_gpt
+import eutils
+import use_gpt
 import os
 import pandas as pd
 import yaml
@@ -23,7 +23,7 @@ def load_config(config_path="config.yml"):
 
 # TODO WSL2で試したらなぜかうまくいかない。。
 
-def main():
+def main(config_path=args.config_path):
     """
     """
     # ログの設定

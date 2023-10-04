@@ -3,7 +3,7 @@
 2. This tool also extracts metadata from literature data using ChatGPT if you set the parameters.
 
 ## How to use 
-- `conda create -n pubmedzenbu python=3.9'
+- `conda create -n pubmedzenbu python=3.9`
 - Create a `config.yml` 
 ```
 # Sample config.yml
