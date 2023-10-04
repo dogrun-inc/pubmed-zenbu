@@ -3,7 +3,7 @@
 # https://zenn.dev/sikkim/articles/490f4043230b5a
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
@@ -26,7 +26,7 @@ INSTALL_REQUIRES = [
     'Pandas>=2.0.0'
 ]
 PACKAGES = [
-    'PubmedZenbu'
+    ['PubmedZenbu']
 ]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
@@ -59,7 +59,8 @@ setup(
     install_requires=INSTALL_REQUIRES,
     entry_points={
         "console_scripts": [
-            "PubmedZenbu=PubmedZenbu.PubmedZenbu:main"
+            "PubmedZenbu=PubmedZenbu.PubmedZenbu:main" #main関数の指定
         ]
-    }
+    },
+    packages=find_packages()
 )
