@@ -59,7 +59,7 @@ setup(
     install_requires=INSTALL_REQUIRES,
     entry_points={
         "console_scripts": [
-            "sample=PubmedZenbu/.PubmedZenbu:main",
+            "sample=PubmedZenbu/.PubmedZenbu:main"
         ]
     }
 )
