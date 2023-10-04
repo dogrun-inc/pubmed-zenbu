@@ -18,14 +18,14 @@ pubmed_search:
   # (Required) `title` or `abstract`. If choose `abstract`, it means you get the joined string of title and abstract.
   which_text_to_use: title
 openai:
-  # (Required) `true` or `false`
-  use_openai: true
-  # (Optional) if use_openai is true, add your openai_api_key
+  # (Required) if use, add 'yes'. If not, keep it empty.
+  use_openai: yes
+  # (Optional) if use_openai is true, add your openai_api_key. Otherwise, keep it empty.
   openai_api_key: YOUR_OPENAI_API_KEY
-  # (Optional) Prompt to ask ChatGPT
+  # (Optional) Prompt to ask ChatGPT. If you don't use it, keep it empty.
   prompt: "extract gene and species from the following text \n"
   # (Required) Set the output path. If use_openai is false, literature data will be written out.
-  output_path: /Users/suzuki/pubmed-zenbu/extract_result_20231004.csv
+  output_path: ./extract_result_20231004.csv
 ```
 
 - `pubmedzenbu PATH_TO_YOUR_config.yml_FILE`
