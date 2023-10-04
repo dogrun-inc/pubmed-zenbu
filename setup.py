@@ -6,15 +6,14 @@
 from setuptools import setup, find_packages
 
 with open('README.md', 'r', encoding='utf-8') as f:
-    long_description = f.read()
+    LONG_DESCRIPTION = f.read()
 
 DESCRIPTION = 'PubmedZenbu' # Tools description
 NAME = 'PubmedZenbu'
 AUTHOR = 'Sora Yonezawa, Mitsuo Shintani, Naoya Oec, Takayuki Suzuki'
 AUTHOR_EMAIL = 'oec@dogrun.jp' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu/tree/2023_dev_suzuki'
-long_description = long_description,
-long_description_content_type = 'text/markdown',
+LONG_DESCRIPTION_CONTENT_TYPE = 'text/markdown'
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
 VERSION = '0.2.5' # Version number
@@ -32,10 +31,6 @@ CLASSIFIERS=[
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11'
 ]
-with open('README.md', 'r', encoding='utf-8') as fp:
-    readme = fp.read()
-LONG_DESCRIPTION = readme
-LONG_DESCRIPTION_CONTENT_TYPE = 'text/markdown'
 
 setup(
     name=NAME,
