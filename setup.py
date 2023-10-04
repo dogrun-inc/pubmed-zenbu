@@ -55,7 +55,7 @@ setup(
     install_requires=INSTALL_REQUIRES,
     entry_points={
         "console_scripts": [
-            "PubmedZenbu=PubmedZenbu.PubmedZenbu:main" #main関数の指定
+            "pubmedzenbu=PubmedZenbu.PubmedZenbu:main" #main関数の指定
         ]
     },
     packages=find_packages()
