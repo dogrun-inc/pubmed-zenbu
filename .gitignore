@@ -136,3 +136,6 @@ extract_result.csv
 
 # config.yml
 config.yml
+
+extract_result#
+.pubmedzenbu/log.txt
