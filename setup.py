@@ -25,9 +25,6 @@ INSTALL_REQUIRES = [
     'PyYAML>=5.1',
     'Pandas>=2.0.0'
 ]
-PACKAGES = [
-    ['PubmedZenbu']
-]
 KEYWORDS = 'pubmed scraping article dogrun'
 CLASSIFIERS=[
     'License :: OSI Approved :: MIT License', # MIT License
@@ -52,7 +49,6 @@ setup(
     maintainer_email=AUTHOR_EMAIL,
     url=URL,
     download_url=URL,
-    packages=PACKAGES,
     classifiers=CLASSIFIERS,
     license=LICENSE,
     keywords=KEYWORDS,
