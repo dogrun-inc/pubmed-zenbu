@@ -5,11 +5,16 @@
 
 from setuptools import setup
 
-DESCRIPTION = '- This tool extracts metadata from PubMed articles using ChatGPT. Inputs as a `search query for PubMed` and `prompt for ChatGPT`, output as a csv file including the extracted results. Positional arguments: arguments.csv (csv file including openai_api_key, ncbi_api_key, search_query, and prompt),oldest_year (oldest year to search for PubMed)' # Tools description
+with open('README.md', 'r', encoding='utf-8') as f:
+    long_description = f.read()
+
+DESCRIPTION = 'PubmedZenbu' # Tools description
 NAME = 'PubmedZenbu'
 AUTHOR = 'Sora Yonezawa, Mitsuo Shintani, Naoya Oec, Takayuki Suzuki'
 AUTHOR_EMAIL = 'oec@dogrun.jp' # Suzuki-san's email address
 URL = 'https://github.com/dogrun-inc/pubmed-zenbu/tree/2023_dev_suzuki'
+long_description = long_description,
+long_description_content_type = 'text/markdown',
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
 VERSION = '0.1.0' # Version number
