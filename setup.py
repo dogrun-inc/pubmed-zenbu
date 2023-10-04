@@ -56,5 +56,10 @@ setup(
     classifiers=CLASSIFIERS,
     license=LICENSE,
     keywords=KEYWORDS,
-    install_requires=INSTALL_REQUIRES
+    install_requires=INSTALL_REQUIRES,
+    entry_points={
+        "console_scripts": [
+            "sample=PubmedZenbu/.PubmedZenbu:main",
+        ]
+    }
 )
