@@ -23,7 +23,7 @@ def load_config(config_path="config.yml"):
 
 # TODO WSL2で試したらなぜかうまくいかない。。
 
-def main(config_file_path=args.config_path):
+def main():
     """
     """
     # ログの設定
@@ -32,14 +32,14 @@ def main(config_file_path=args.config_path):
     stdout_original = sys.stdout
     try:
         sys.stdout = stdout_original
-        config = load_config(config_file_path)
+        config = load_config(args.config_path)
         ncbi_api_key = config['pubmed_search']['ncbi_api_key']
         search_query = config['pubmed_search']['search_query']
         oldest_year = config['pubmed_search']['search_oldest_year']
         texttouse = config['pubmed_search']['which_text_to_use']
         output_path = config['openai']['output_path']
         if ncbi_api_key == None or search_query == None or oldest_year == None or texttouse == None:
-            print(f"please fill in your config file at {config_file_path}")
+            print(f"please fill in your config file at {args.config_path}")
         else:
             pass
         # esearchを使ってpmidのリストを取得する
