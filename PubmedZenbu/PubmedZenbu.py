@@ -1,22 +1,25 @@
 # encoding: utf-8
-import requests
+import sys
 import argparse
-import subprocess
-import xml.etree.ElementTree as ET
 import csv
+import yaml
 from . import eutils
 from . import use_gpt
-import os
-import pandas as pd
-import yaml
-import sys
 
-parser = argparse.ArgumentParser(description="This script extracts information from PubMed abstract and title using openai.")
-parser.add_argument("config_path", help="path to config.yml") 
+parser = argparse.ArgumentParser(
+    description="This script extracts information from PubMed abstract and title using openai.")
+parser.add_argument("config_path", help="path to config.yml")
 args = parser.parse_args()
 
+
 def load_config(config_path="config.yml"):
-    with open(config_path, "r") as config_file:
+    """_summary_
+    Args:
+        config_path (str, optional): _description_. Defaults to "config.yml".
+    Returns:
+        _type_: _description_
+    """
+    with open(config_path) as config_file:
         config = yaml.safe_load(config_file)
     return config
 
@@ -24,20 +27,22 @@ def load_config(config_path="config.yml"):
 # TODO WSL2で試したらなぜかうまくいかない。。
 
 def main():
-    """
+    """__summary__
+
     """
     # ログの設定
-    log_file='log.txt'
+    log_file = 'log.txt'
     log_file_handler = open(log_file, 'a')
     stdout_original = sys.stdout
     config = load_config(args.config_path)
     sys.stdout = stdout_original
     ncbi_api_key = config['pubmed_search']['ncbi_api_key']
     search_query = config['pubmed_search']['search_query']
+    database = config['database']
     oldest_year = config['pubmed_search']['search_oldest_year']
     texttouse = config['pubmed_search']['which_text_to_use']
     output_path = config['openai']['output_path']
-    if ncbi_api_key == None or search_query == None or oldest_year == None or texttouse == None:
+    if ncbi_api_key is None or search_query is None or oldest_year is None or texttouse is None:
         print(f"please fill in your config file at {args.config_path}")
     else:
         pass
@@ -52,7 +57,8 @@ def main():
         count = eutils.get_text_by_tree("./Count", id_res)
         count = int(count)
         if count > 10000:
-            print(f"PMID has exceeded 10000 for {a_year} in this search query. Consider to change your search query keywords. Otherwise, please use EDirect to obtain PMIDs (NCBI recommended)")
+            print(
+                f"PMID has exceeded 10000 for {a_year} in this search query. Consider to change your search query keywords. Otherwise, please use EDirect to obtain PMIDs (NCBI recommended)")
             print(f"the number of pmids: {count}")
             break
         else:
@@ -96,7 +102,8 @@ def main():
             for_join = []
             pmid = eutils.get_text_by_tree("./MedlineCitation/PMID", element)
             print(f"\npmid: {pmid}....")
-            element_title = element.find("./MedlineCitation/Article/ArticleTitle")
+            element_title = element.find(
+                "./MedlineCitation/Article/ArticleTitle")
             title = "".join(element_title.itertext())
             if config['openai']['use_openai']:
                 prompt = config['openai']['prompt']
@@ -107,7 +114,7 @@ def main():
                 for_join.append(title)
                 pass
             if texttouse == "title":
-                print("title only")               
+                print("title only")
                 input = ",".join(for_join)
             elif texttouse == "abstract":
                 print("title and abstract")
@@ -116,26 +123,31 @@ def main():
                 )
                 try:
                     abstract = "".join(element_abstract.itertext())
-                except:
-                    abstract = ""      
-                abstract = abstract + "'" 
+                except TypeError as error:
+                    print(f"Error: {error}")
+                    abstract = ""
+                abstract = abstract + "'"
                 for_join.append(abstract)
                 input = ",".join(for_join)
             else:
-                print("please choose either title or abstract for 'which_text_to_use' in your config.yml")
+                print(
+                    "please choose either title or abstract for 'which_text_to_use' in your config.yml")
                 # use openAI api
             if config['openai']['use_openai'] is None:
                 print("Not using OpenAI. PubMed search results will be exported")
-                print({"pmid":pmid,"gpt_or_PubmedResults":input})
-                extracted_data.append({"pmid":pmid,"gpt_or_PubmedResults":input})
+                print({"pmid": pmid, "gpt_or_PubmedResults": input})
+                extracted_data.append(
+                    {"pmid": pmid, "gpt_or_PubmedResults": input})
             else:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a')
                 try:
-                    openai_result = use_gpt.gpt_api(input, config['openai']['openai_api_key'])
-                    print({"pmid":pmid,"gpt_or_PubmedResults":openai_result})
+                    openai_result = use_gpt.gpt_api(
+                        input, config['openai']['openai_api_key'])
+                    print({"pmid": pmid, "gpt_or_PubmedResults": openai_result})
                     # プログラムが急停止してしまう事態のバックアップとして、途中経過を出力する
-                    extracted_data.append({"pmid":pmid,"gpt_or_PubmedResults":openai_result})
+                    extracted_data.append(
+                        {"pmid": pmid, "gpt_or_PubmedResults": openai_result})
                 except:
                     print("error at openai_api: {}".format(pmid))
 
@@ -149,10 +161,12 @@ def main():
     with open(
         output_path,
         "w",
+        encoding="utf-8"  # add encoding
     ) as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=field_name)
         writer.writeheader()
         writer.writerows(extracted_data)
+
 
 if __name__ == "__main__":
     main()
