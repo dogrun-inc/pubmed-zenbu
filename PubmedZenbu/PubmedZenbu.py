@@ -6,6 +6,7 @@ import yaml
 from . import eutils
 from . import use_gpt
 
+# argument parser (get config file path)
 parser = argparse.ArgumentParser(
     description="This script extracts information from PubMed abstract and title using openai.")
 parser.add_argument("config_path", help="path to config.yml")
