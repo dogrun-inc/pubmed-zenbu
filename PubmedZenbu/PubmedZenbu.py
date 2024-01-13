@@ -218,7 +218,7 @@ def main():
 
                             if config['openai']['use_openai']:
                                 print("using OpenAI. stdout will be written in log.txt as a backup")
-                                for_join = [] 
+                                for_join = []
                                 prompt = config['openai']['prompt']
                                 for_join.append(prompt)
                                 content_formatted = "\n'" + content + "'"
