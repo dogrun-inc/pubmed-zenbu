@@ -1,6 +1,5 @@
 import requests
 import xml.etree.ElementTree as ET
-from urllib.request import Request, urlopen
 
 def get_yearlist(minyear:int):
     """
@@ -77,7 +76,6 @@ def generate_chunked_id_list(id_list, max_len) -> list:
     return [id_list[i : i + max_len] for i in range(0, len(id_list), max_len)]
 
 
-     
 def get_text_by_tree(treepath, element):
     """
     Parameters:
@@ -118,8 +116,7 @@ def use_eutils(api_url):
         Output in XML
 
     """
-    req = requests.get(api_url)
+    req = requests.get(api_url, timeout=30) # add timeout to avoid hanging
     req.raise_for_status()
     tree = ET.fromstring(req.content)
     return tree
-
