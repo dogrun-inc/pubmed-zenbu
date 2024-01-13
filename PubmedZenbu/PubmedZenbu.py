@@ -70,8 +70,8 @@ def main():
         # print(count)
         if count > 10000:
             print(
-                f"PMID has exceeded 10000 for {a_year} in this search query. Consider to change your search query keywords. Otherwise, please use EDirect to obtain PMIDs (NCBI recommended)")
-            print(f"the number of pmids: {count}")
+                f"ID has exceeded 10000 for {a_year} in this search query. Consider to change your search query keywords. Otherwise, please use EDirect to obtain IDs (NCBI recommended)")
+            print(f"the number of ids: {count}")
             break
         else:
             pass
@@ -199,10 +199,11 @@ def main():
             try:
                 tree2 = eutils.use_eutils(pmc_api2)
                 for element in tree2.findall(".//pmc-articleset"):
-                    pmcid = element.find('.//article-id pub-id-type="pmc"').text
+                    pmcid = eutils.get_text_by_tree('.//article-id pub-id-type="pmc"', element)
+                    print(f"\npmcid: {pmcid}....")
                     for section in element.findall(".//sec"):
                         title = section.find(".//title")
-                        content = ""
+                        content = []
                         if title is not None:
                             if title.text == texttouse:
                                 content = "".join(section.itertext())
