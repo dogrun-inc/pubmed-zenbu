@@ -201,6 +201,7 @@ def main():
                 for element in tree2.findall(".//article"):
                     for section in element.findall(".//sec"):
                         title = section.find(".//title")
+                        content = ""
                         if title is not None and title.text == texttouse:
                             content = "".join(section.itertext())
                             for_join = []
