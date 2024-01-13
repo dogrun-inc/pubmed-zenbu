@@ -52,10 +52,9 @@ def call_esearch_pmc(query_str: str, mindate:int) -> ET.Element:
     ------
         tree: xml
     """
-    pmc_url = f"https://www.ncbi.nlm.nih.gov/pmc/utils/esearch.fcgi?db=pmc&term={query_str}&retmax=10000&mindate={mindate}&maxdate={mindate}"
+    pmc_url = f"https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pmc&term={query_str}&retmax=10000&mindate={mindate}&maxdate={mindate}"
     tree = use_eutils(pmc_url)
     return tree
-
 
 
 def generate_chunked_id_list(id_list, max_len) -> list:
