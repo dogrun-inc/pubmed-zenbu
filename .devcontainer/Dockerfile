@@ -31,4 +31,5 @@ RUN pip install \
     tqdm==4.66.1 \
     tzdata==2023.3 \
     urllib3==2.0.5 \
-    yarl==1.9.2
+    yarl==1.9.2 \
+    PyYAML=5.1
