@@ -199,7 +199,7 @@ def main():
             try:
                 tree2 = eutils.use_eutils(pmc_api2)
                 for element in tree2.findall(".//pmc-articleset"):
-                    pmcid = element.find(".//article-id[@pub-id-type='pmc']").text
+                    pmcid = element.find('.//article-id pub-id-type="pmc"').text
                     for section in element.findall(".//sec"):
                         title = section.find(".//title")
                         content = ""
