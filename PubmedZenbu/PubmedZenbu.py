@@ -203,8 +203,7 @@ def main():
                 tree2 = eutils.use_eutils(pmc_api2)
             except (requests.exceptions.RequestException, ET.ParseError) as e:
                 print(f"error at {pmc_api2}, error message: {e}")
-
-            
+            # search tag
             for element in tree2.iter("pmc-articleset"):
                 pmcid = eutils.get_text_by_tree('.//article-id pub-id-type="pmc"', element)
                 print(f"\npmcid: {pmcid}....")
