@@ -1,0 +1,34 @@
+{
+    "name": "devcontainer-python3.9",
+    "build": {
+      "dockerfile": "Dockerfile",
+      "context": "./",
+      "args": {
+        "VARIANT": "3.9-bullseye"
+      }
+    },
+    "runArgs": [
+      "--init"
+      ], // https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/docker-in-docker.md
+    "customizations": { //https://zenn.dev/newgyu/scraps/4c24bf3df804bd
+      "vscode": {
+        "extensions": [
+          "ms-python.python",
+          "ms-python.vscode-pylance",
+          "ms-toolsai.jupyter",
+          "ms-toolsai.vscode-jupyter-cell-tags",
+          "ms-toolsai.jupyter-keymap",
+          "GitHub.copilot",
+          "ms-azuretools.vscode-docker",
+          "mechatroner.rainbow-csv",
+          "usernamehw.errorlens"
+        ]
+      }
+    },
+    "remoteUser": "vscode",
+    "features": { //https://code.visualstudio.com/blogs/2022/09/15/dev-container-features#_features
+          //https://containers.dev/features 
+      "ghcr.io/devcontainers/features/docker-in-docker:2": "latest",
+          "ghcr.io/devcontainers/features/git:1": "os-provided"
+    }
+  }
