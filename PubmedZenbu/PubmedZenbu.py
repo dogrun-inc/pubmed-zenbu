@@ -198,15 +198,21 @@ def main():
             print("connected to efetch for PMC...")
             try:
                 tree2 = eutils.use_eutils(pmc_api2)
-                for element in tree2.findall(".//article"):
+                for element in tree2.findall(".//pmc-articleset"):
+                    pmcid = element.find(".//article-id[@pub-id-type='pmc']").text
                     for section in element.findall(".//sec"):
                         title = section.find(".//title")
                         content = ""
-                        if title is not None and title.text == texttouse:
-                            content = "".join(section.itertext())
-                            for_join = []
+                        if title is not None:
+                            if title.text == texttouse:
+                                content = "".join(section.itertext())
+                                title_text = title.text
+                            else:
+                                continue
 
                             if config['openai']['use_openai']:
+                                print("using OpenAI. stdout will be written in log.txt as a backup")
+                                for_join = [] 
                                 prompt = config['openai']['prompt']
                                 for_join.append(prompt)
                                 content_formatted = "\n'" + content + "'"
@@ -216,18 +222,31 @@ def main():
                                 try:
                                     openai_result = use_gpt.gpt_api(
                                         input, config['openai']['openai_api_key'])
-                                    print({"section": title.text, "gpt_or_PMCResults": openai_result})
+                                    print({"pmcid": pmcid, "section": title_text, "gpt_or_PMCResults": openai_result})
                                     extracted_data.append(
-                                        {"section": title.text, "gpt_or_PMCResults": openai_result})
+                                        {"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": openai_result})
                                 except (requests.exceptions.RequestException, ET.ParseError) as e:
                                     print(f"Error using OpenAI API: {e}")
+                            else:
+                                print("Not using OpenAI. PubMed search results will be exported")
+                                print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
+                                extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
+
                         else:
-                            print("Not using OpenAI. PMC search results will be exported")
-                            print({"section": title.text, "content": content})
-                            extracted_data.append(
-                                {"section": title.text, "content": content})
+                            title_text = "No title"
+                            print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
+                            extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
+            
             except (requests.exceptions.RequestException, ET.ParseError) as e:
                 print(f"error at {pmc_api2}, error message: {e}")
+
+        log_file_handler.close()
+        #export the result as csv
+        field_name = [
+            "pmcid",
+            "section",
+            "gpt_or_PMC_Results",
+        ]                          
 
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
