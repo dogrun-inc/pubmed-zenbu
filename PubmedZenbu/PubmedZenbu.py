@@ -182,13 +182,14 @@ def main():
         extracted_data = []
 
         for a_chunked_pmcids in list_of_chunked_pmcids:
-            pmc_str = ",".join(a_chunked_pmcids)
+            pmcids_str = a_chunked_pmcids
+            pmcids_str = ",".join(a_chunked_pmcids)
 
             # Get Webenv
             epost_params = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/epost.fcgi?db=pmc&id={}&api_key={}"
-            pmc_api1 = epost_params.format(pmc_str, ncbi_api_key)
-            print(pmc_api1)
+            pmc_api1 = epost_params.format(pmcids_str, ncbi_api_key)
             print("connected to epost for PMC...")
+            print(pmc_api1)
 
             tree1 = eutils.use_eutils(pmc_api1)
             webenv = tree1.find("WebEnv").text
@@ -196,20 +197,24 @@ def main():
             efetch_params = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&WebEnv={}&query_key=1&api_key={}&retmode=xml"
             pmc_api2 = efetch_params.format(webenv, ncbi_api_key)
             print("connected to efetch for PMC...")
+            print(pmc_api2)
+
             try:
                 tree2 = eutils.use_eutils(pmc_api2)
-                for element in tree2.findall(".//pmc-articleset"):
-                    pmcid = eutils.get_text_by_tree('.//article-id pub-id-type="pmc"', element)
-                    print(f"\npmcid: {pmcid}....")
-                    for section in element.findall(".//sec"):
-                        title = section.find(".//title")
-                        content = []
-                        if title is not None:
-                            if title.text == texttouse:
-                                content = "".join(section.itertext())
-                                title_text = title.text
-                            else:
-                                continue
+            except (requests.exceptions.RequestException, ET.ParseError) as e:
+                print(f"error at {pmc_api2}, error message: {e}")
+
+            
+            for element in tree2.findall("pmc-articleset"):
+                pmcid = eutils.get_text_by_tree('.//article-id pub-id-type="pmc"', element)
+                print(f"\npmcid: {pmcid}....")
+                for section in element.findall(".//sec"):
+                    title = section.find(".//title")
+                    content = []
+                    if title is not None:
+                        if title.text == texttouse:
+                            content = "".join(section.itertext())
+                            title_text = title.text
 
                             if config['openai']['use_openai']:
                                 print("using OpenAI. stdout will be written in log.txt as a backup")
@@ -232,14 +237,12 @@ def main():
                                 print("Not using OpenAI. PubMed search results will be exported")
                                 print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
                                 extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
-
                         else:
-                            title_text = "No title"
-                            print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
-                            extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
-            
-            except (requests.exceptions.RequestException, ET.ParseError) as e:
-                print(f"error at {pmc_api2}, error message: {e}")
+                            continue
+                    else:
+                        title_text = "No title"
+                        print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
+                        extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
 
         log_file_handler.close()
         #export the result as csv
