@@ -205,7 +205,7 @@ def main():
                 print(f"error at {pmc_api2}, error message: {e}")
 
             
-            for element in tree2.findall("pmc-articleset"):
+            for element in tree2.iter("pmc-articleset"):
                 pmcid = eutils.get_text_by_tree('.//article-id pub-id-type="pmc"', element)
                 print(f"\npmcid: {pmcid}....")
                 for section in element.findall(".//sec"):
