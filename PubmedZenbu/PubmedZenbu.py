@@ -1,5 +1,6 @@
 # encoding: utf-8
 import sys
+import re
 import argparse
 import csv
 import xml.etree.ElementTree as ET
@@ -39,6 +40,7 @@ def main():
     stdout_original = sys.stdout
     config = load_config(args.config_path)
     sys.stdout = stdout_original
+    #Get information from config.yml
     ncbi_api_key = config['search']['ncbi_api_key']
     query_database = config['search']['query_database']
     search_query = config['search']['search_query']
@@ -179,7 +181,7 @@ def main():
         pmcids_alllist = list(set(ids_alllist))
         print(f"number of PMCids: {len(pmcids_alllist)}")
         list_of_chunked_pmcids = eutils.generate_chunked_id_list(pmcids_alllist, 190)
-        extracted_data = []
+        extracted_pmc_data = []
 
         for a_chunked_pmcids in list_of_chunked_pmcids:
             pmcids_str = a_chunked_pmcids
@@ -203,56 +205,41 @@ def main():
             except (requests.exceptions.RequestException, ET.ParseError) as e:
                 print(f"error at {pmc_api2}, error message: {e}")
         # search PMC ID tag
-         
+                        
         for element in tree2.iter("article"):
             for_join = []
-            pmcid = eutils.get_text_by_tree('./front/article-meta/article-id[@pub-id-type="pmc"]', element)
+            pmcid = eutils.get_text_by_tree(
+                './front/article-meta/article-id[@pub-id-type="pmc"]', element)
             print(f"\npmcid: {pmcid}....")
+            element_title_pmc = element.find(
+                './front/article-meta/title-group/article-title') # PMC XML tag
+            pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.
             
-            for section in element.findall(".//sec"):
-                title = section.find(".//title")
-                content = ""
-                if title is not None:
-                    if title.text == texttouse:
-                        content = "".join(section.itertext())
-                        title_text = title.text
-
-                        if config['openai']['use_openai']:
-                            print("using OpenAI. stdout will be written in log.txt as a backup")
-                            for_join = []
-                            prompt = config['openai']['prompt']
-                            for_join.append(prompt)
-                            content_formatted = "\n'" + content + "'"
-                            for_join.append(content_formatted)
-                            input = ",".join(for_join)
-
-                            try:
-                                openai_result = use_gpt.gpt_api(
-                                    input, config['openai']['openai_api_key'])
-                                print({"pmcid": pmcid, "section": title_text, "gpt_or_PMCResults": openai_result})
-                                extracted_data.append(
-                                    {"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": openai_result})
-                            except (requests.exceptions.RequestException, ET.ParseError) as e:
-                                print(f"Error using OpenAI API: {e}")
-                        else:
-                            print("Not using OpenAI. PubMed search results will be exported")
-                            print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
-                            extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": content})
-                    else:
-                        continue
+            # retrieve from article body
+            # 1.introduction
+            if texttouse == "introduction":
+                print("introduction")
+                # Preferentially searches for "sec-type" tags
+                element_introduction = element.find('./body/sec[@sec-type="intro"]')
+                if element_introduction is not None:
+                    introduction_text = "".join(element_introduction.itertext())
                 else:
-                    title_text = "No title"
-                    print({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
-                    extracted_data.append({"pmcid": pmcid, "section": title_text, "gpt_or_PMC_Results": ""})
-
-        log_file_handler.close()
-        #export the result as csv
-        field_name = [
-            "pmcid",
-            "section",
-            "gpt_or_PMC_Results",
-        ]
-
+                    for sec in element.findall('./body/sec'):
+                        title = sec.find('./title')
+                        if title is not None and re.search("Introduction",
+                                                           title.text,
+                                                           re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
+                            introduction_text = "".join(sec.itertext())
+                            break
+            
+                extracted_pmc_data.append({"PMCID": pmcid, 
+                                          "Article title": pmc_title, 
+                                          "Introduction": introduction_text})
+            else:
+                print(
+                    "please choose either introduction for 'which_text_to_use' in your config.yml")
+                break    
+    
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
