@@ -224,7 +224,7 @@ def main():
                 # Preferentially searches for "sec-type" tags
                 element_introduction = element.find('./body/sec[@sec-type="intro"]')
                 if element_introduction is not None:
-                    introduction_text = "".join(element_introduction.itertext()).replace("\n", " ")
+                    body_text = "".join(element_introduction.itertext()).replace("\n", "")# Remove line breaks
                 else:
                     print('"sec-type" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
@@ -232,17 +232,28 @@ def main():
                         if title is not None and re.search("Introduction",
                                                            title.text,
                                                            re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
-                            introduction_text = "".join(sec.itertext()).replace("\n", " ")
+                            body_text = "".join(sec.itertext()).replace("\n", "") # Remove line breaks
                             break
-            
-                extracted_pmc_data.append({"PMCID": pmcid, 
-                                          "Article_title": pmc_title, 
-                                          "description": introduction_text})
             else:
                 print(
                     "please choose section")
                 break
-
+            #use openAI api
+            if config['openai']['use_openai']:
+                print("using OpenAI. stdout will be written in log.txt as a backup")
+                sys.stdout = open(log_file, 'a', encoding='utf-8')
+                try:
+                    processed_text = use_gpt.gpt_api(body_text, config['openai']['openai_api_key'])
+                    extracted_pmc_data.append({"PMCID": pmcid, 
+                                            "Article_title": pmc_title, 
+                                            "description": processed_text})
+                except (requests.exceptions.RequestException, ET.ParseError) as e:
+                    print(f"error at {api2}, error message: {e}")
+            else:
+                print("Not using OpenAI. PMC search results will be exported")
+                extracted_pmc_data.append({"PMCID": pmcid, 
+                                          "Article_title": pmc_title, 
+                                          "description": body_text})
             field_name_pmc = ["PMCID",
                               "Article_title", 
                               "description"]  
