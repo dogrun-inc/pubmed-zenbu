@@ -251,14 +251,14 @@ def main():
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
     _, file_extension = os.path.splitext(output_path) # Get the extension of the output file
-    if file_extension.lower == ".json":
+    if file_extension.lower() == ".json":
         print("exporting as json...")
         with open(output_path, "w", encoding="utf-8") as jsonfile:
             if query_database == "pubmed":
                 json.dump(extracted_data, jsonfile, ensure_ascii=False, indent=4)
             elif query_database == "pmc":
                 json.dump(extracted_pmc_data, jsonfile, ensure_ascii=False, indent=4)
-    elif file_extension.lower == ".csv":
+    elif file_extension.lower() == ".csv":
         print("exporting as csv...")
         with open(output_path, "w", encoding="utf-8") as csvfile:
             if query_database == "pubmed":
