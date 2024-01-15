@@ -224,7 +224,7 @@ def main():
                 # Preferentially searches for "sec-type" tags
                 element_introduction = element.find('./body/sec[@sec-type="intro"]')
                 if element_introduction is not None:
-                    introduction_text = "".join(element_introduction.itertext())
+                    introduction_text = "".join(element_introduction.itertext()).replace("\n", " ")
                 else:
                     print('"sec-type" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
@@ -232,7 +232,7 @@ def main():
                         if title is not None and re.search("Introduction",
                                                            title.text,
                                                            re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
-                            introduction_text = "".join(sec.itertext())
+                            introduction_text = "".join(sec.itertext()).replace("\n", " ")
                             break
             
                 extracted_pmc_data.append({"PMCID": pmcid, 
