@@ -234,24 +234,28 @@ def main():
             
                 extracted_pmc_data.append({"PMCID": pmcid, 
                                           "Article title": pmc_title, 
-                                          "Introduction": introduction_text})
+                                          "gpt_or_PubmedResults": introduction_text})
             else:
                 print(
                     "please choose section")
-                break    
+                break
+
+            field_name_pmc = ["PMCID", 
+                              "Article title", 
+                              "gpt_or_PubmedResults"]  
     
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
-    with open(
-        output_path,
-        "w",
-        encoding="utf-8"  # add encoding
-    ) as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=field_name)
-        writer.writeheader()
-        writer.writerows(extracted_data)
-
+    with open(output_path, "w", encoding="utf-8") as csvfile:
+        if query_database == "pubmed":
+            writer = csv.DictWriter(csvfile, fieldnames=field_name)
+            writer.writeheader()
+            writer.writerows(extracted_data)
+        elif query_database == "pmc":
+            writer = csv.DictWriter(csvfile, fieldnames=field_name_pmc)
+            writer.writeheader()
+            writer.writerows(extracted_pmc_data)
 
 if __name__ == "__main__":
     main()
