@@ -206,7 +206,7 @@ def main():
          
         for element in tree2.iter("article"):
             for_join = []
-            pmcid = eutils.get_text_by_tree('.//front/article-meta/article-id[@pub-id-type="pmc"]', element)
+            pmcid = eutils.get_text_by_tree('./front/article-meta/article-id[@pub-id-type="pmc"]', element)
             print(f"\npmcid: {pmcid}....")
             
             for section in element.findall(".//sec"):
