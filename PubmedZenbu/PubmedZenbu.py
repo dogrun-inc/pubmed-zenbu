@@ -1,8 +1,10 @@
 # encoding: utf-8
+import os
 import sys
 import re
 import argparse
 import csv
+import json
 import xml.etree.ElementTree as ET
 import requests.exceptions
 import yaml
@@ -218,12 +220,13 @@ def main():
             # retrieve from article body
             # 1.introduction
             if texttouse == "introduction":
-                print("introduction")
+                print("Getting an Introduction section...")
                 # Preferentially searches for "sec-type" tags
                 element_introduction = element.find('./body/sec[@sec-type="intro"]')
                 if element_introduction is not None:
                     introduction_text = "".join(element_introduction.itertext())
                 else:
+                    print('"sec-type" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
                         title = sec.find('./title')
                         if title is not None and re.search("Introduction",
@@ -233,29 +236,39 @@ def main():
                             break
             
                 extracted_pmc_data.append({"PMCID": pmcid, 
-                                          "Article title": pmc_title, 
-                                          "gpt_or_PubmedResults": introduction_text})
+                                          "Article_title": pmc_title, 
+                                          "description": introduction_text})
             else:
                 print(
                     "please choose section")
                 break
 
-            field_name_pmc = ["PMCID", 
-                              "Article title", 
-                              "gpt_or_PubmedResults"]  
+            field_name_pmc = ["PMCID",
+                              "Article_title", 
+                              "description"]  
     
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
-    with open(output_path, "w", encoding="utf-8") as csvfile:
-        if query_database == "pubmed":
-            writer = csv.DictWriter(csvfile, fieldnames=field_name)
-            writer.writeheader()
-            writer.writerows(extracted_data)
-        elif query_database == "pmc":
-            writer = csv.DictWriter(csvfile, fieldnames=field_name_pmc)
-            writer.writeheader()
-            writer.writerows(extracted_pmc_data)
+    _, file_extension = os.path.splitext(output_path) # Get the extension of the output file
+    if file_extension.lower == ".json":
+        print("exporting as json...")
+        with open(output_path, "w", encoding="utf-8") as jsonfile:
+            if query_database == "pubmed":
+                json.dump(extracted_data, jsonfile, ensure_ascii=False, indent=4)
+            elif query_database == "pmc":
+                json.dump(extracted_pmc_data, jsonfile, ensure_ascii=False, indent=4)
+    elif file_extension.lower == ".csv":
+        print("exporting as csv...")
+        with open(output_path, "w", encoding="utf-8") as csvfile:
+            if query_database == "pubmed":
+                writer = csv.DictWriter(csvfile, fieldnames=field_name)
+                writer.writeheader()
+                writer.writerows(extracted_data)
+            elif query_database == "pmc":
+                writer = csv.DictWriter(csvfile, fieldnames=field_name_pmc)
+                writer.writeheader()
+                writer.writerows(extracted_pmc_data)
 
 if __name__ == "__main__":
     main()
