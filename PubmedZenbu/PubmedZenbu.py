@@ -237,7 +237,7 @@ def main():
                                           "Introduction": introduction_text})
             else:
                 print(
-                    "please choose either introduction for 'which_text_to_use' in your config.yml")
+                    "please choose section")
                 break    
     
     else:
