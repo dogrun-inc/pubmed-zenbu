@@ -160,7 +160,7 @@ def main():
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
                 try:
-                    openai_result = use_gpt.gpt_api(
+                    openai_result = use_gpt.gpt4_api(
                         input, config['openai']['openai_api_key'])
                     print({"pmid": pmid, "gpt_or_PubmedResults": openai_result})
                     #Output intermediate results as a backup in case the program suddenly stops
@@ -243,7 +243,7 @@ def main():
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
                 try:
-                    processed_text = use_gpt.gpt_api(body_text, config['openai']['openai_api_key'])
+                    processed_text = use_gpt.gpt4_api(body_text, config['openai']['openai_api_key'])
                     extracted_pmc_data.append({"PMCID": pmcid, 
                                             "Article_title": pmc_title, 
                                             "description": processed_text})
