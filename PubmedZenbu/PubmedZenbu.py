@@ -254,6 +254,7 @@ def main():
                 extracted_pmc_data.append({"PMCID": pmcid, 
                                           "Article_title": pmc_title, 
                                           "description": body_text})
+            log_file_handler.close()
             field_name_pmc = ["PMCID",
                               "Article_title", 
                               "description"]  
