@@ -213,8 +213,26 @@ def main():
                 tree2 = eutils.use_eutils(pmc_api2)
             except (requests.exceptions.RequestException, ET.ParseError) as e:
                 print(f"error at {pmc_api2}, error message: {e}")
-        # search PMC ID tag
-                        
+            
+            section_mappings = { # PMC XML tag as a dictionary
+                "introduction": {
+                    "sec-type": "intro",
+                    "title": "Introduction"
+                },
+                "results": {
+                    "sec-type": "results",
+                    "title": "Results"
+                },
+                "discussion": {
+                    "sec-type": "discussion",
+                    "title": "Discussion"
+                },
+                "materials and methods": {
+                    "sec-type": "materials|methods",
+                    "title": "Materials and Methods"
+                }
+            }
+        # search PMC ID tag  
         for element in tree2.iter("article"):
             for_join = []
             pmcid = eutils.get_text_by_tree(
@@ -225,25 +243,28 @@ def main():
             pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.
             
             # retrieve from article body
-            # 1.introduction
-            if texttouse == "introduction":
-                print("Getting an Introduction section...")
+            body_text = None
+            section_info = section_mappings.get(texttouse) # Get the section information from the dictionary
+            if section_info:
+                print(f"Getting {section_info['title']}...")
                 # Preferentially searches for "sec-type" tags
-                element_introduction = element.find('./body/sec[@sec-type="intro"]')
-                if element_introduction is not None:
-                    body_text = "".join(element_introduction.itertext()).replace("\n", "")# Remove line breaks
+                element_section = element.find(
+                    f'./body/sec[@sec-type="{section_info["sec-type"]}"]')
+                if element_section is not None:
+                    body_text = "".join(
+                        element_section.itertext()).replace("\n", "")# Remove line breaks
                 else:
-                    print('"sec-type" tag not found. Searching for "sec" tags...')
+                    print(f'"{section_info["sec_type"]}" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
                         title = sec.find('./title')
-                        if title is not None and re.search("Introduction",
+                        if title is not None and re.search(section_info["title"],
                                                            title.text,
                                                            re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
                             body_text = "".join(sec.itertext()).replace("\n", "") # Remove line breaks
                             break
             else:
-                print(
-                    "please choose section")
+                print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
+                body_text = f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for XML format."
                 break
             #use openAI api
             if config['openai']['use_openai']:

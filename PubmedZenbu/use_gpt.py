@@ -6,7 +6,7 @@ import openai
 def gpt_api(prompt,openai_api_key):
     openai.api_key = openai_api_key
     response = openai.Completion.create(
-        engine="gpt-4-1106-preview", #text-davinci-003 has been deprecated https://platform.openai.com/docs/deprecations
+        engine="gpt-3.5-turbo-1106", #text-davinci-003 has been deprecated https://platform.openai.com/docs/deprecations
         prompt=prompt,
         temperature=0.01,
         max_tokens=1000,
