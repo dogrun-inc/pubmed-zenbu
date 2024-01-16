@@ -160,8 +160,15 @@ def main():
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
                 try:
-                    openai_result = use_gpt.gpt4_api(
-                        input, config['openai']['openai_api_key'])
+                    if config['openai']['model'] == "gpt3.5":
+                        openai_result = use_gpt.gpt_api(
+                            input, config['openai']['openai_api_key'])
+                    elif config['openai']['model'] == "gpt4":
+                        openai_result = use_gpt.gpt4_api(
+                            input, config['openai']['openai_api_key'])
+                    else:
+                        print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
+                    
                     print({"pmid": pmid, "gpt_or_PubmedResults": openai_result})
                     #Output intermediate results as a backup in case the program suddenly stops
                     extracted_data.append(
@@ -243,7 +250,15 @@ def main():
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
                 try:
-                    processed_text = use_gpt.gpt4_api(body_text, config['openai']['openai_api_key'])
+                    if config['openai']['model'] == "gpt3.5":
+                        processed_text = use_gpt.gpt_api(
+                            body_text, config['openai']['openai_api_key'])
+                    elif config['openai']['model'] == "gpt4":
+                        processed_text = use_gpt.gpt4_api(
+                            body_text, config['openai']['openai_api_key'])
+                    else:
+                        print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
+                    
                     extracted_pmc_data.append({"PMCID": pmcid, 
                                             "Article_title": pmc_title, 
                                             "description": processed_text})
