@@ -257,10 +257,11 @@ def main():
                         title = sec.find('./title')
                         if title is not None and re.search(section_info["title"],
                                                            title.text,
-                                                           re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
+                                                           re.IGNORECASE):# Ignore case (e.g., introduction, Introduction)
+        
                             body_text = "".join(sec.itertext()).replace("\n", "") # Remove line breaks
             else:
-                print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
+                message = print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
                 continue
             #use openAI api
             if config['openai']['use_openai']:
