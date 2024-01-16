@@ -234,7 +234,6 @@ def main():
             }
         # search PMC ID tag  
         for element in tree2.iter("article"):
-            for_join = []
             pmcid = eutils.get_text_by_tree(
                 './front/article-meta/article-id[@pub-id-type="pmc"]', element)
             print(f"\npmcid: {pmcid}....")
@@ -243,7 +242,6 @@ def main():
             pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.
             
             # retrieve from article body
-            body_text = None
             section_info = section_mappings.get(texttouse) # Get the section information from the dictionary
             if section_info:
                 print(f"Getting {section_info['title']}...")
@@ -261,11 +259,9 @@ def main():
                                                            title.text,
                                                            re.IGNORECASE): # Ignore case (e.g., introduction, Introduction)
                             body_text = "".join(sec.itertext()).replace("\n", "") # Remove line breaks
-                            break
             else:
                 print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
-                body_text = f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for XML format."
-            
+                continue
             #use openAI api
             if config['openai']['use_openai']:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
@@ -293,8 +289,7 @@ def main():
             log_file_handler.close()
             field_name_pmc = ["PMCID",
                               "Article_title", 
-                              "description"]  
-    
+                              "description"]
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
