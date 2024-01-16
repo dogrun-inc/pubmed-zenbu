@@ -265,7 +265,7 @@ def main():
             else:
                 print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
                 body_text = f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for XML format."
-                break
+            
             #use openAI api
             if config['openai']['use_openai']:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
