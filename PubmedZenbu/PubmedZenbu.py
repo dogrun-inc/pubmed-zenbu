@@ -8,8 +8,8 @@ import json
 import xml.etree.ElementTree as ET
 import requests.exceptions
 import yaml
-from . import eutils
-from . import use_gpt
+from PubmedZenbu import eutils
+from PubmedZenbu import use_gpt
 
 # argument parser (get config file path)
 parser = argparse.ArgumentParser(
@@ -175,8 +175,6 @@ def main():
                         {"pmid": pmid, "gpt_or_PubmedResults": openai_result})
                 except (requests.exceptions.RequestException, ET.ParseError) as e:
                     print(f"error at {api2}, error message: {e}")
-        # output the log file
-        log_file_handler.close()
         #export the result as csv
         field_name = [
             "pmid",
@@ -236,7 +234,7 @@ def main():
         for element in tree2.iter("article"):
             pmcid = eutils.get_text_by_tree(
                 './front/article-meta/article-id[@pub-id-type="pmc"]', element)
-            print(f"\npmcid: {pmcid}....")
+            print(f"\npmcid: {pmcid} process....")
             element_title_pmc = element.find(
                 './front/article-meta/title-group/article-title') # PMC XML tag
             pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.
@@ -252,48 +250,58 @@ def main():
                     body_text = "".join(
                         element_section.itertext()).replace("\n", "")# Remove line breaks
                 else:
+                    # If specific sec-type tag not found, search for "sec" tags
                     print(f'"{section_info["sec_type"]}" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
                         title = sec.find('./title')
                         if title is not None and re.search(section_info["title"],
                                                            title.text,
                                                            re.IGNORECASE):# Ignore case (e.g., introduction, Introduction)
-        
-                            body_text = "".join(sec.itertext()).replace("\n", "") # Remove line breaks
-            else:
-                message = print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
-                continue
-            #use openAI api
-            if config['openai']['use_openai']:
-                print("using OpenAI. stdout will be written in log.txt as a backup")
-                sys.stdout = open(log_file, 'a', encoding='utf-8')
-                try:
-                    if config['openai']['model'] == "gpt3.5":
-                        processed_text = use_gpt.gpt_api(
-                            body_text, config['openai']['openai_api_key'])
-                    elif config['openai']['model'] == "gpt4":
-                        processed_text = use_gpt.gpt4_api(
-                            body_text, config['openai']['openai_api_key'])
+                            body_text = "".join(sec.itertext()).replace("\n", "")
+                            break
                     else:
-                        print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
+                        # If no matching section is found
+                        print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
+                        print("Skipping to next article.")
+                        body_text = ""
+                        continue
+            
+                #use openAI api
+                if config['openai']['use_openai']:
+                    print("using OpenAI. stdout will be written in log.txt as a backup")
+                    sys.stdout = open(log_file, 'a', encoding='utf-8')
+                    try:
+                        if config['openai']['model'] == "gpt3.5":
+                            processed_text = use_gpt.gpt_api(
+                                body_text, config['openai']['openai_api_key'])
+                        elif config['openai']['model'] == "gpt4":
+                            processed_text = use_gpt.gpt4_api(
+                                body_text, config['openai']['openai_api_key'])
+                        else:
+                            print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
                     
-                    extracted_pmc_data.append({"PMCID": pmcid, 
+                        extracted_pmc_data.append({"PMCID": pmcid, 
                                             "Article_title": pmc_title, 
                                             "description": processed_text})
-                except (requests.exceptions.RequestException, ET.ParseError) as e:
-                    print(f"error at {api2}, error message: {e}")
-            else:
-                print("Not using OpenAI. PMC search results will be exported")
-                extracted_pmc_data.append({"PMCID": pmcid, 
+                    except (requests.exceptions.RequestException, ET.ParseError) as e:
+                        print(f"error at {api2}, error message: {e}")
+                else:
+                    print("Not using OpenAI. PMC search results will be exported")
+                    extracted_pmc_data.append({"PMCID": pmcid, 
                                           "Article_title": pmc_title, 
                                           "description": body_text})
-            log_file_handler.close()
-            field_name_pmc = ["PMCID",
-                              "Article_title", 
-                              "description"]
+            else:
+                print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
+                continue
+
+        field_name_pmc = ["PMCID",
+                        "Article_title", 
+                        "description"]
+    # PMC process end
     else:
         print(f"Error: '{query_database}' is not a valid database option. Please choose 'pubmed' or 'pmc'.")
 
+    log_file_handler.close()
     _, file_extension = os.path.splitext(output_path) # Get the extension of the output file
     if file_extension.lower() == ".json":
         print("exporting as json...")
