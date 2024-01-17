@@ -189,7 +189,6 @@ def main():
         print(f"number of PMCids: {len(pmcids_alllist)}")
         list_of_chunked_pmcids = eutils.generate_chunked_id_list(pmcids_alllist, 190)
         extracted_pmc_data = []
-        section_not_found = False
 
         for a_chunked_pmcids in list_of_chunked_pmcids:
             pmcids_str = a_chunked_pmcids
@@ -233,6 +232,7 @@ def main():
             }
         # search PMC ID tag  
         for element in tree2.iter("article"):
+            section_not_found = False # Flag to check if the section was found
             pmcid = eutils.get_text_by_tree(
                 './front/article-meta/article-id[@pub-id-type="pmc"]', element)
             print(f"\npmcid: {pmcid} process....")
