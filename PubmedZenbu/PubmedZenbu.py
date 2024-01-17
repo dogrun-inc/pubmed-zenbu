@@ -183,7 +183,7 @@ def main():
 
 ########## Get PMC information ##########
 
-#Retrieved information using epost and efetch
+    #Retrieved information using epost and efetch
     elif query_database == "pmc":
         pmcids_alllist = list(set(ids_alllist))
         print(f"number of PMCids: {len(pmcids_alllist)}")
@@ -201,7 +201,7 @@ def main():
             print(pmc_api1)
             tree1 = eutils.use_eutils(pmc_api1)
             webenv = tree1.find("WebEnv").text
-            # Use Webenv to get information
+            # Use Webenv to get information from efetch
             efetch_params = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&WebEnv={}&query_key=1&api_key={}&retmode=xml"
             pmc_api2 = efetch_params.format(webenv, ncbi_api_key)
             print("connected to efetch for PMC...")
@@ -212,22 +212,23 @@ def main():
             except (requests.exceptions.RequestException, ET.ParseError) as e:
                 print(f"error at {pmc_api2}, error message: {e}")
             
-            section_mappings = { # PMC XML tag as a dictionary
-                "introduction": {
-                    "sec-type": "intro",
-                    "title": "Introduction"
+        # PMC XML tag as a dictionary
+        section_mappings = {
+            "introduction": {
+                "sec-type": "intro",
+                "title": "Introduction"
                 },
-                "results": {
-                    "sec-type": "results",
-                    "title": "Results"
+            "results": {
+                "sec-type": "results",
+                "title": "Results"
                 },
-                "discussion": {
-                    "sec-type": "discussion",
-                    "title": "Discussion"
+            "discussion": {
+                "sec-type": "discussion",
+                "title": "Discussion"
                 },
-                "materials and methods": {
-                    "sec-type": "materials|methods",
-                    "title": "Materials and Methods"
+            "materials and methods": {
+                "sec-type": "materials|methods",
+                "title": "Materials and Methods"
                 }
             }
         # search PMC ID tag  
@@ -238,8 +239,7 @@ def main():
             print(f"\npmcid: {pmcid} process....")
             element_title_pmc = element.find(
                 './front/article-meta/title-group/article-title') # PMC XML tag
-            pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.
-            
+            pmc_title = "".join(element_title_pmc.itertext()) # The function to use the use_gpt function for titles is omitted.        
             # retrieve from article body
             section_info = section_mappings.get(texttouse) # Get the section information from the dictionary
             # body_text processing
