@@ -264,7 +264,7 @@ def main():
                             print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
                             print("Skipping to next article.")
                             body_text = ""
-                            continue
+                        
             else:
                 print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
                 sys.exit()           
