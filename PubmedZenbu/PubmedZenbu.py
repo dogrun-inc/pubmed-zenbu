@@ -189,6 +189,7 @@ def main():
         print(f"number of PMCids: {len(pmcids_alllist)}")
         list_of_chunked_pmcids = eutils.generate_chunked_id_list(pmcids_alllist, 190)
         extracted_pmc_data = []
+        section_not_found = False
 
         for a_chunked_pmcids in list_of_chunked_pmcids:
             pmcids_str = a_chunked_pmcids
@@ -264,12 +265,13 @@ def main():
                             print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
                             print("Skipping to next article.")
                             body_text = "Possibility of 'Results and Discussion' or 'Review'"
+                            section_not_found = True # Set flag to True
                             break                 
             else:
                 print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
                 sys.exit()           
             #use openAI api
-            if config['openai']['use_openai']:
+            if config['openai']['use_openai'] and not section_not_found:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
                 combine_text = pmc_title + "\n" + body_text
