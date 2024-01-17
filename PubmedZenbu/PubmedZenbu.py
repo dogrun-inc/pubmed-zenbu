@@ -259,15 +259,15 @@ def main():
                                                            title.text,
                                                            re.IGNORECASE):# Ignore case (e.g., introduction, Introduction)
                             body_text = "".join(sec.itertext()).replace("\n", "")
-                            break
-                    else:
-                        # If no matching section is found
-                        print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
-                        print("Skipping to next article.")
-                        body_text = ""
-                        continue
+                        else:
+                            # If no matching section is found
+                            print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
+                            print("Skipping to next article.")
+                            body_text = ""
+                            continue
             else:
-                print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")            
+                print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
+                sys.exit()           
             #use openAI api
             if config['openai']['use_openai']:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
