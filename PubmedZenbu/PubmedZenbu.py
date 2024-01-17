@@ -252,7 +252,7 @@ def main():
                         element_section.itertext()).replace("\n", "")# Remove line breaks
                 else:
                     # If specific sec-type tag not found, search for "sec" tags
-                    print(f'"{section_info["sec_type"]}" tag not found. Searching for "sec" tags...')
+                    print(f'"{section_info["sec-type"]}" tag not found. Searching for "sec" tags...')
                     for sec in element.findall('./body/sec'):
                         title = sec.find('./title')
                         if title is not None and re.search(section_info["title"],
