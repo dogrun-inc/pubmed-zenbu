@@ -263,7 +263,7 @@ def main():
                             # If no matching section is found
                             print(f"This article might be a 'Results and Discussion' or a review paper. See {pmc_api2} for more details.")
                             print("Skipping to next article.")
-                            body_text = ""
+                            body_text = "Possibility of 'Results and Discussion' or 'Review'"
                             break                 
             else:
                 print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
@@ -272,15 +272,16 @@ def main():
             if config['openai']['use_openai']:
                 print("using OpenAI. stdout will be written in log.txt as a backup")
                 sys.stdout = open(log_file, 'a', encoding='utf-8')
+                combine_text = pmc_title + "\n" + body_text
                 try:
                     if config['openai']['model'] == "gpt3.5":
                         processed_text = use_gpt.gpt_api(
-                            body_text, config['openai']['openai_api_key'])
+                            combine_text, config['openai']['openai_api_key'])
                     elif config['openai']['model'] == "gpt4":
                         processed_text = use_gpt.gpt4_api(
-                            body_text, config['openai']['openai_api_key'])
+                            combine_text, config['openai']['openai_api_key'])
                     else:
-                        print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
+                        print(f"Warning: Unknown model '{config['openai']['model']}' specified.")
                     
                     extracted_pmc_data.append({"PMCID": pmcid, 
                                             "Article_title": pmc_title, 
