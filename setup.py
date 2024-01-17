@@ -18,7 +18,7 @@ URL = 'https://github.com/dogrun-inc/pubmed-zenbu/tree/2023_dev_yonezawa'
 LONG_DESCRIPTION_CONTENT_TYPE = 'text/markdown'
 LICENSE = 'MIT' # MIT License
 DOWNLOAD_URL = URL
-VERSION = '0.5.7' # Version number
+VERSION = '0.5.8' # Version number
 PYTHON_REQUIRES = '>=3.9'
 INSTALL_REQUIRES = [
     'requests>=2.31',
