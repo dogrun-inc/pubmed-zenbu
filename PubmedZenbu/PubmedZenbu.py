@@ -241,6 +241,7 @@ def main():
             
             # retrieve from article body
             section_info = section_mappings.get(texttouse) # Get the section information from the dictionary
+            # body_text processing
             if section_info:
                 print(f"Getting {section_info['title']}...")
                 # Preferentially searches for "sec-type" tags
@@ -265,35 +266,35 @@ def main():
                         print("Skipping to next article.")
                         body_text = ""
                         continue
-            
-                #use openAI api
-                if config['openai']['use_openai']:
-                    print("using OpenAI. stdout will be written in log.txt as a backup")
-                    sys.stdout = open(log_file, 'a', encoding='utf-8')
-                    try:
-                        if config['openai']['model'] == "gpt3.5":
-                            processed_text = use_gpt.gpt_api(
-                                body_text, config['openai']['openai_api_key'])
-                        elif config['openai']['model'] == "gpt4":
-                            processed_text = use_gpt.gpt4_api(
-                                body_text, config['openai']['openai_api_key'])
-                        else:
-                            print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
+            else:
+                print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")            
+            #use openAI api
+            if config['openai']['use_openai']:
+                print("using OpenAI. stdout will be written in log.txt as a backup")
+                sys.stdout = open(log_file, 'a', encoding='utf-8')
+                try:
+                    if config['openai']['model'] == "gpt3.5":
+                        processed_text = use_gpt.gpt_api(
+                            body_text, config['openai']['openai_api_key'])
+                    elif config['openai']['model'] == "gpt4":
+                        processed_text = use_gpt.gpt4_api(
+                            body_text, config['openai']['openai_api_key'])
+                    else:
+                        print(f"Warning: Unknown model '{config['openai']['model']}' specified. Defaulting to gpt3.5.")
                     
-                        extracted_pmc_data.append({"PMCID": pmcid, 
+                    extracted_pmc_data.append({"PMCID": pmcid, 
                                             "Article_title": pmc_title, 
                                             "description": processed_text})
-                    except (requests.exceptions.RequestException, ET.ParseError) as e:
-                        print(f"error at {api2}, error message: {e}")
-                else:
-                    print("Not using OpenAI. PMC search results will be exported")
-                    extracted_pmc_data.append({"PMCID": pmcid, 
+                except (requests.exceptions.RequestException, ET.ParseError) as e:
+                    print(f"error at {api2}, error message: {e}")
+                finally:
+                    sys.stdout = stdout_original
+            else:
+                print("Not using OpenAI. PMC search results will be exported")
+                extracted_pmc_data.append({"PMCID": pmcid, 
                                           "Article_title": pmc_title, 
                                           "description": body_text})
-            else:
-                print(f"Error: ‘{texttouse}’ is not a valid option for ‘which_text_to_use’. Please choose ‘introduction’, ‘results’, ‘discussion’, or ‘materials and methods’.")
-                continue
-
+        
         field_name_pmc = ["PMCID",
                         "Article_title", 
                         "description"]
