@@ -294,7 +294,7 @@ def main():
                     sys.stdout = stdout_original
             else:
                 print("Not using OpenAI. PMC search results will be exported")
-                extracted_pmc_data.append({"PMCID": pmcid, 
+                extracted_pmc_data.append({"PMCID": pmcid,
                                           "Article_title": pmc_title, 
                                           "description": body_text})
         
